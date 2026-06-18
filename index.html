@@ -500,10 +500,10 @@
 
         const vb=document.getElementById('verdict-banner');
         vb.className='verdict-banner '+(passed?'aprobado':'desaprobado');
-        document.getElementById('verdict-title').innerText=passed?'APROBADO ✅':'DESAPROBADO ❌';
+        document.getElementById('verdict-title').innerText=passed?'¡Muy bien, aprobaste! ✅':'Seguí practicando 💪';
         document.getElementById('verdict-sub').innerText=passed
-            ?`Obtuviste ${pctNum}% — Mínimo requerido: ${PASS_PCT}%`
-            :`Obtuviste ${pctNum}% — Necesitás al menos ${PASS_PCT}% (${PASS_SCORE} pts de ${MAX_SCORE})`;
+            ?`Obtuviste ${pctNum}% — ¡Superaste el mínimo requerido de ${PASS_PCT}%!`
+            :`Obtuviste ${pctNum}% — El mínimo es ${PASS_PCT}%. ¡Repasá los temas y volvé a intentarlo!`;
 
         document.getElementById('res-score').innerText=score;
         document.getElementById('res-pct').innerText=pctNum+'%';
@@ -625,7 +625,7 @@ ${dataBlock}`
                 <td>${r.pct}%</td>
                 <td>${r.time}</td>
                 <td>${String(r.date).split(',')[0]}</td>
-                <td><span class="${r.passed?'badge-pass':'badge-fail'}">${r.passed?'APROBADO':'DESAPROBADO'}</span></td>
+                <td><span class="${r.passed?'badge-pass':'badge-fail'}">${r.passed?'Aprobado':'A reforzar'}</span></td>
             </tr>`;
         });
     }
@@ -653,7 +653,7 @@ ${dataBlock}`
                     </div>
                     <div style="display:flex;align-items:center;gap:8px;">
                         <span style="font-weight:800;color:var(--conecta);">${r.score} pts (${r.pct}%)</span>
-                        <span class="${r.passed?'badge-pass':'badge-fail'}">${r.passed?'APROBADO':'DESAPROBADO'}</span>
+                        <span class="${r.passed?'badge-pass':'badge-fail'}">${r.passed?'Aprobado':'A reforzar'}</span>
                         <span style="font-size:0.7rem;color:#aaa;">▶</span>
                     </div>
                 </div>`;
@@ -667,7 +667,7 @@ ${dataBlock}`
         if(!r) return;
         document.getElementById('detail-overlay-name').innerText=r.name;
         document.getElementById('detail-overlay-meta').innerHTML=
-            `${r.date} &nbsp;|&nbsp; ⏱ ${r.time} &nbsp;|&nbsp; ${r.score} pts (${r.pct}%) &nbsp;|&nbsp; <span class="${r.passed?'badge-pass':'badge-fail'}">${r.passed?'APROBADO':'DESAPROBADO'}</span>`;
+            `${r.date} &nbsp;|&nbsp; ⏱ ${r.time} &nbsp;|&nbsp; ${r.score} pts (${r.pct}%) &nbsp;|&nbsp; <span class="${r.passed?'badge-pass':'badge-fail'}">${r.passed?'Aprobado':'A reforzar'}</span>`;
 
         const content=document.getElementById('detail-overlay-content');
         content.innerHTML='';
@@ -782,63 +782,105 @@ ${dataBlock}`
     async function exportPDF(){
         const results=await getResults();
         if(!results.length){alert('No hay resultados para exportar');return;}
-
         const w=window.open('','_blank');
         const date=new Date().toLocaleDateString('es-AR');
+        const aprobados=results.filter(r=>r.passed).length;
+        const promedio=results.length?Math.round(results.reduce((a,r)=>a+r.pct,0)/results.length):0;
+        const maxScore=results.length?Math.max(...results.map(r=>r.pct)):0;
 
         let rows='';
         results.forEach((r,i)=>{
-            const passColor=r.passed?'#1a7f3c':'#c0392b';
-            const passBg=r.passed?'#dff6e8':'#fdeaea';
-            rows+=`<tr style="background:${i%2===0?'white':'#f8fafc'}">
-                <td>${r.name}</td>
-                <td style="text-align:center;">${r.score}</td>
-                <td style="text-align:center;">${r.pct}%</td>
-                <td style="text-align:center;">${r.correct}</td>
-                <td style="text-align:center;">${r.wrong}</td>
-                <td style="text-align:center;">${r.time}</td>
-                <td style="text-align:center;">${String(r.date).split(',')[0]}</td>
-                <td style="text-align:center;"><span style="background:${passBg};color:${passColor};padding:3px 10px;border-radius:6px;font-weight:800;font-size:0.8rem;">${r.passed?'APROBADO':'DESAPROBADO'}</span></td>
+            const estado=r.passed?'Aprobado':'A reforzar';
+            const passColor=r.passed?'#1a7f3c':'#b45309';
+            const passBg=r.passed?'#dcfce7':'#fef3c7';
+            const passBorder=r.passed?'#86efac':'#fcd34d';
+            const bar=Math.round(r.pct);
+            const barColor=r.pct>=80?'#16a34a':r.pct>=60?'#d97706':'#dc2626';
+            rows+=`<tr>
+                <td><div style="font-weight:700;color:#1e293b;">${r.name}</div></td>
+                <td style="text-align:center;font-weight:800;color:#7c3aed;">${r.score}</td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="flex:1;background:#f1f5f9;border-radius:99px;height:8px;overflow:hidden;">
+                            <div style="width:${bar}%;background:${barColor};height:100%;border-radius:99px;"></div>
+                        </div>
+                        <span style="font-weight:800;font-size:0.85rem;color:${barColor};min-width:36px;">${bar}%</span>
+                    </div>
+                </td>
+                <td style="text-align:center;color:#16a34a;font-weight:700;">${r.correct}</td>
+                <td style="text-align:center;color:#dc2626;font-weight:700;">${r.wrong}</td>
+                <td style="text-align:center;color:#64748b;">${r.time}</td>
+                <td style="text-align:center;color:#64748b;font-size:0.8rem;">${String(r.date).split(',')[0]}</td>
+                <td style="text-align:center;">
+                    <span style="background:${passBg};color:${passColor};border:1px solid ${passBorder};padding:4px 12px;border-radius:99px;font-weight:700;font-size:0.75rem;white-space:nowrap;">${estado}</span>
+                </td>
             </tr>`;
         });
 
-        const aprobados=results.filter(r=>r.passed).length;
-        const promedio=results.length?Math.round(results.reduce((a,r)=>a+r.pct,0)/results.length):0;
-
         w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-        <title>Resultados Examen Prestadores JS</title>
+        <title>Resultados Examen Prestadores — Jerárquicos Salud</title>
         <style>
-            body{font-family:'Segoe UI',Arial,sans-serif;margin:0;padding:30px;color:#2c3e50;background:white;}
-            .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:20px;border-bottom:3px solid #00554e;}
-            .header h1{color:#00554e;font-size:1.4rem;margin:0;}
-            .header p{color:#6b7c8f;font-size:0.8rem;margin:4px 0 0;}
-            .stats{display:flex;gap:16px;margin-bottom:24px;}
-            .stat-box{flex:1;background:#f4f7f9;border-radius:12px;padding:14px;text-align:center;}
-            .stat-box .val{font-size:1.6rem;font-weight:800;color:#00554e;}
-            .stat-box .lbl{font-size:0.65rem;text-transform:uppercase;color:#aaa;font-weight:700;margin-top:2px;}
-            table{width:100%;border-collapse:collapse;font-size:0.82rem;}
-            th{background:#4a537d;color:white;padding:10px 12px;text-align:left;}
-            td{padding:9px 12px;border-bottom:1px solid #edf2f7;}
-            .footer{margin-top:20px;font-size:0.72rem;color:#aaa;text-align:center;}
-            @media print{body{padding:15px;}}
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+            *{box-sizing:border-box;margin:0;padding:0;}
+            body{font-family:'Inter','Segoe UI',sans-serif;background:#f8fafc;color:#1e293b;padding:32px;}
+            .page{max-width:900px;margin:0 auto;}
+            .topbar{background:linear-gradient(135deg,#00554e,#007a72);border-radius:16px;padding:24px 28px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;}
+            .topbar-left h1{color:white;font-size:1.3rem;font-weight:800;margin-bottom:4px;}
+            .topbar-left p{color:rgba(255,255,255,0.75);font-size:0.78rem;}
+            .topbar-right{text-align:right;}
+            .topbar-right .big-date{color:white;font-weight:700;font-size:0.9rem;}
+            .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+            .stat{background:white;border-radius:14px;padding:16px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #e2e8f0;}
+            .stat .val{font-size:1.8rem;font-weight:800;line-height:1;}
+            .stat .lbl{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#94a3b8;font-weight:600;margin-top:6px;}
+            .card{background:white;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #e2e8f0;overflow:hidden;margin-bottom:24px;}
+            .card-header{padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;}
+            .card-header h2{font-size:0.9rem;font-weight:700;color:#475569;}
+            table{width:100%;border-collapse:collapse;}
+            th{background:#f8fafc;color:#64748b;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.4px;font-weight:700;padding:12px 16px;text-align:left;border-bottom:2px solid #e2e8f0;}
+            td{padding:13px 16px;border-bottom:1px solid #f1f5f9;font-size:0.85rem;vertical-align:middle;}
+            tr:last-child td{border-bottom:none;}
+            tr:hover td{background:#fafbfc;}
+            .footer{text-align:center;color:#94a3b8;font-size:0.72rem;margin-top:16px;}
+            @media print{
+                body{background:white;padding:16px;}
+                .page{max-width:100%;}
+                .topbar{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+                .stat,.card{box-shadow:none;}
+                tr:hover td{background:none;}
+            }
         </style></head><body>
-        <div class="header">
-            <div>
-                <h1>📋 Resultados — Examen de Prestadores</h1>
-                <p>Jerárquicos Salud &nbsp;·&nbsp; Generado: ${date} &nbsp;·&nbsp; Total: ${results.length} auxiliares</p>
+        <div class="page">
+            <div class="topbar">
+                <div class="topbar-left">
+                    <h1>Examen de Prestadores</h1>
+                    <p>Jerárquicos Salud &nbsp;·&nbsp; Reporte de resultados del equipo</p>
+                </div>
+                <div class="topbar-right"><div class="big-date">${date}</div></div>
             </div>
+            <div class="stats">
+                <div class="stat"><div class="val" style="color:#7c3aed;">${results.length}</div><div class="lbl">Total</div></div>
+                <div class="stat"><div class="val" style="color:#16a34a;">${aprobados}</div><div class="lbl">Aprobados</div></div>
+                <div class="stat"><div class="val" style="color:#d97706;">${results.length-aprobados}</div><div class="lbl">A reforzar</div></div>
+                <div class="stat"><div class="val" style="color:#0ea5e9;">${promedio}%</div><div class="lbl">Promedio</div></div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>Detalle por auxiliar</h2>
+                    <span style="font-size:0.75rem;color:#94a3b8;">${results.length} registros</span>
+                </div>
+                <table>
+                    <thead><tr>
+                        <th>Nombre</th><th>Pts</th><th>Porcentaje</th>
+                        <th style="text-align:center;">✓</th><th style="text-align:center;">✗</th>
+                        <th style="text-align:center;">Tiempo</th><th style="text-align:center;">Fecha</th>
+                        <th style="text-align:center;">Estado</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
+            <div class="footer">Jerárquicos Salud · Examen de Prestadores · ${date}</div>
         </div>
-        <div class="stats">
-            <div class="stat-box"><div class="val">${results.length}</div><div class="lbl">Total</div></div>
-            <div class="stat-box"><div class="val" style="color:#1a7f3c;">${aprobados}</div><div class="lbl">Aprobados</div></div>
-            <div class="stat-box"><div class="val" style="color:#c0392b;">${results.length-aprobados}</div><div class="lbl">Desaprobados</div></div>
-            <div class="stat-box"><div class="val">${promedio}%</div><div class="lbl">Promedio</div></div>
-        </div>
-        <table>
-            <thead><tr><th>Nombre</th><th>Puntos</th><th>%</th><th>Correctas</th><th>Incorrectas</th><th>Tiempo</th><th>Fecha</th><th>Estado</th></tr></thead>
-            <tbody>${rows}</tbody>
-        </table>
-        <div class="footer">Examen de Prestadores — Jerárquicos Salud · ${date}</div>
         <script>window.onload=()=>{window.print();}<\/script>
         </body></html>`);
         w.document.close();
