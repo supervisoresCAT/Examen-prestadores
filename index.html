@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen Prestadores — Jerárquicos Salud</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+    --conecta:#b688ea;--conecta-dark:#966fd1;
+    --impulsa:#00554e;--impulsa-light:#007a72;
+    --elite:#4a537d;--elite-light:#6a73a1;
+    --white:#ffffff;--bg:#f4f7f9;--card:#ffffff;
+    --border:#e1e8ed;--text:#2c3e50;--muted:#6b7c8f;
+    --danger:#e74c3c;--success:#28a745;
+    --pass:#1a7f3c;--fail:#c0392b;
+    --shadow:0 20px 40px rgba(0,0,0,0.08);
+}
+[data-theme="dark"]{
+    --white:#1a1f2e;--bg:#141824;--card:#222840;
+    --border:#2e3654;--text:#e2e8f0;--muted:#8896b3;
+    --shadow:0 20px 40px rgba(0,0,0,0.4);
+    --bg-option:#2a3150;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',sans-serif;transition:background-color 0.3s,color 0.2s,border-color 0.2s;}
+body{background:linear-gradient(135deg,var(--bg) 0%,var(--bg) 100%);color:var(--text);display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:10px;}
+[data-theme="dark"] body{background:linear-gradient(135deg,#141824 0%,#0e1220 100%);}
+.container{background:var(--white);width:100%;max-width:700px;border-radius:30px;box-shadow:var(--shadow);padding:25px;position:relative;min-height:600px;display:flex;flex-direction:column;border-top:10px solid var(--impulsa);margin:10px auto;}
+@media(min-width:768px){.container{padding:45px;}}
+.screen{display:none;flex-direction:column;}
+.screen.active{display:flex;animation:fadeIn 0.4s ease-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+/* DARK MODE TOGGLE */
+.dark-toggle{position:absolute;top:18px;right:18px;background:var(--bg);border:2px solid var(--border);border-radius:50px;padding:6px 12px;cursor:pointer;font-size:1rem;display:flex;align-items:center;gap:6px;font-weight:700;font-size:0.72rem;color:var(--muted);}
+.dark-toggle:hover{border-color:var(--conecta);}
+
+/* TYPOGRAPHY */
+h1{color:var(--impulsa);font-weight:800;font-size:1.6rem;text-align:center;margin-bottom:5px;}
+[data-theme="dark"] h1{color:#7dd3b8;}
+.subtitle{text-align:center;margin-bottom:25px;color:var(--muted);font-weight:600;font-size:0.9rem;}
+
+/* INPUTS */
+input[type="text"],input[type="password"],textarea{width:100%;padding:16px;border:2px solid var(--border);border-radius:15px;margin-bottom:15px;font-size:1rem;outline:none;transition:0.3s;background:var(--white);color:var(--text);}
+input:focus,textarea:focus{border-color:var(--conecta);box-shadow:0 0 0 4px rgba(182,136,234,0.15);}
+
+/* BUTTONS */
+button{width:100%;padding:16px;border:none;border-radius:18px;cursor:pointer;font-weight:700;font-size:1rem;transition:0.3s;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-primary{background:var(--conecta);color:white;box-shadow:0 4px 15px rgba(182,136,234,0.3);}
+.btn-primary:hover{background:var(--conecta-dark);transform:translateY(-2px);}
+.btn-outline{background:transparent;border:2px solid var(--elite);color:var(--elite);}
+.btn-outline:hover{background:var(--elite);color:white;}
+.btn-green{background:var(--impulsa);color:white;}
+.btn-green:hover{background:var(--impulsa-light);}
+.btn-admin{background:transparent;color:#a1b0b9;margin-top:auto;font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;}
+.btn-sm{width:auto;padding:10px 18px;font-size:0.8rem;margin:0;}
+.btn-danger{background:#fdeaea;color:var(--danger);border:1px solid #f5c6c6;}
+.btn-success-sm{background:#e8f5e9;color:var(--success);border:1px solid #c8e6c9;}
+[data-theme="dark"] .btn-danger{background:#3d1a1a;color:#f87171;}
+[data-theme="dark"] .btn-success-sm{background:#1a3d2a;color:#6ee7b7;}
+
+/* WELCOME SCREEN */
+.welcome-card{background:linear-gradient(135deg,var(--impulsa),var(--impulsa-light));border-radius:20px;padding:24px;margin-bottom:20px;text-align:center;color:white;}
+.welcome-card .wc-name{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+.welcome-card .wc-sub{font-size:0.85rem;opacity:0.85;}
+.info-pills{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.info-pill{flex:1;min-width:100px;background:var(--bg);border-radius:14px;padding:14px 10px;text-align:center;border:2px solid var(--border);}
+[data-theme="dark"] .info-pill{background:var(--card);}
+.info-pill .ip-val{font-size:1.3rem;font-weight:800;color:var(--impulsa);}
+[data-theme="dark"] .info-pill .ip-val{color:#7dd3b8;}
+.info-pill .ip-lbl{font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-top:3px;}
+
+/* QUIZ */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+#progress{font-weight:700;color:var(--elite-light);font-size:0.85rem;}
+.racha-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;min-height:28px;}
+.racha-label{font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;}
+.racha-fires{display:flex;gap:3px;}
+.fire{font-size:1.3rem;animation:popIn 0.3s ease-out;}
+@keyframes popIn{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+.racha-count{font-size:0.75rem;font-weight:800;color:#e67e22;background:#fff3e0;padding:2px 8px;border-radius:8px;display:none;}
+.racha-count.visible{display:block;}
+.progress-bar-wrap{background:var(--border);border-radius:10px;height:8px;margin-bottom:18px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--impulsa),var(--conecta));border-radius:10px;transition:width 0.5s ease;}
+
+/* FEEDBACK INLINE */
+.answer-feedback{text-align:center;padding:10px;border-radius:12px;font-weight:800;font-size:1rem;margin-top:8px;display:none;animation:popIn 0.3s;}
+.answer-feedback.correct-fb{background:#e8f5e9;color:var(--pass);}
+.answer-feedback.wrong-fb{background:#fff8e1;color:#92400e;}
+
+/* OPTIONS */
+.option{background:var(--white);border:2px solid var(--border);padding:16px;border-radius:15px;margin-bottom:12px;cursor:pointer;transition:0.2s;font-weight:600;font-size:0.95rem;color:var(--text);display:flex;align-items:center;gap:10px;}
+[data-theme="dark"] .option{background:var(--bg-option,#2a3150);}
+.option:hover{border-color:var(--conecta);background:#fdfbff;transform:translateX(8px);}
+[data-theme="dark"] .option:hover{background:#323d60;}
+.option.correct{background:#dff6e8!important;border-color:var(--success)!important;color:#1b5e20;}
+.option.wrong{background:#fff8e1!important;border-color:#f59e0b!important;color:#92400e;animation:shake 0.4s;}
+.option-letter{width:28px;height:28px;border-radius:8px;background:var(--bg);font-size:0.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--elite);}
+.option.correct .option-letter{background:var(--success);color:white;}
+.option.wrong .option-letter{background:#f59e0b;color:white;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.explanation{background:#f8f0ff;padding:20px;border-radius:15px;margin-top:15px;border-left:6px solid var(--conecta);display:none;font-size:0.9rem;line-height:1.5;color:#5d468e;}
+[data-theme="dark"] .explanation{background:#2a1f40;color:#c4b5fd;}
+
+/* RESULTADO */
+.result-breakdown{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.result-stat{flex:1;min-width:70px;background:var(--bg);border-radius:16px;padding:12px 8px;text-align:center;}
+[data-theme="dark"] .result-stat{background:var(--card);}
+.result-stat .rs-val{font-size:1.5rem;font-weight:800;}
+.result-stat .rs-lbl{font-size:0.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+.rs-score .rs-val{color:var(--conecta);}
+.rs-correct .rs-val{color:var(--success);}
+.rs-wrong .rs-val{color:var(--danger);}
+.rs-streak .rs-val{color:#e67e22;}
+.verdict-banner{padding:16px 20px;border-radius:18px;text-align:center;margin-bottom:16px;}
+.verdict-banner.aprobado{background:#e8f5e9;border:2px solid var(--success);color:var(--pass);}
+.verdict-banner.reforzar{background:#fef9ec;border:2px solid #f59e0b;color:#92400e;}
+.verdict-banner .verd-title{font-size:1.4rem;font-weight:800;}
+.verdict-banner .verd-sub{font-size:0.8rem;font-weight:600;margin-top:4px;opacity:0.85;}
+
+/* REVISIÓN */
+.review-item{border:2px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;}
+.review-item.rev-correct{border-color:var(--success);background:#f5fff8;}
+.review-item.rev-wrong{border-color:#f59e0b;background:#fffbeb;}
+[data-theme="dark"] .review-item.rev-correct{background:#1a3d2a;}
+[data-theme="dark"] .review-item.rev-wrong{background:#3d2e0a;}
+.review-q-num{font-size:0.7rem;font-weight:800;text-transform:uppercase;margin-bottom:6px;}
+.rev-correct .review-q-num{color:var(--success);}
+.rev-wrong .review-q-num{color:#d97706;}
+.review-q-text{font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.4;}
+.review-answer{display:flex;align-items:flex-start;gap:8px;padding:8px 12px;border-radius:10px;font-size:0.85rem;font-weight:600;margin-bottom:6px;}
+.review-answer.user-right{background:#dff6e8;color:#1b5e20;}
+.review-answer.user-wrong{background:#fff8e1;color:#92400e;}
+.review-answer.correct-ans{background:#e8f0ff;color:#1a3a8f;}
+[data-theme="dark"] .review-answer.correct-ans{background:#1a2550;color:#93c5fd;}
+.review-exp{font-size:0.78rem;color:#5d468e;background:#f8f0ff;padding:10px 12px;border-radius:10px;margin-top:8px;line-height:1.5;border-left:4px solid var(--conecta);}
+[data-theme="dark"] .review-exp{background:#2a1f40;color:#c4b5fd;}
+
+/* ADMIN */
+.admin-tabs{display:flex;gap:6px;margin-bottom:15px;flex-wrap:wrap;}
+.admin-tab-btn{flex:1;min-width:70px;padding:10px 6px;border-radius:12px;font-size:0.7rem;font-weight:700;border:2px solid var(--border);background:var(--white);color:var(--elite);cursor:pointer;transition:0.2s;margin:0;}
+.admin-tab-btn.active{background:var(--elite);color:white;border-color:var(--elite);}
+[data-theme="dark"] .admin-tab-btn{background:var(--card);color:#93c5fd;border-color:var(--border);}
+
+/* STATS ADMIN */
+.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.admin-stat{background:var(--bg);border-radius:14px;padding:12px 8px;text-align:center;border:1px solid var(--border);}
+[data-theme="dark"] .admin-stat{background:var(--card);}
+.admin-stat .as-val{font-size:1.4rem;font-weight:800;}
+.admin-stat .as-lbl{font-size:0.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+
+/* FILTRO */
+.filter-bar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.filter-btn{width:auto;padding:7px 14px;border-radius:10px;font-size:0.72rem;font-weight:700;border:2px solid var(--border);background:var(--white);color:var(--muted);cursor:pointer;margin:0;transition:0.2s;}
+.filter-btn.active{background:var(--elite);color:white;border-color:var(--elite);}
+[data-theme="dark"] .filter-btn{background:var(--card);}
+
+/* TABLA */
+.ranking-table{width:100%;border-collapse:collapse;background:var(--white);font-size:0.78rem;}
+[data-theme="dark"] .ranking-table{background:var(--card);}
+.ranking-table th{background:var(--elite);color:white;position:sticky;top:0;z-index:10;}
+.ranking-table th,.ranking-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.ranking-table tr:nth-child(even){background:var(--bg);}
+[data-theme="dark"] .ranking-table tr:nth-child(even){background:rgba(255,255,255,0.02);}
+
+/* CHART */
+.chart-wrap{background:var(--bg);border-radius:16px;padding:16px;margin-bottom:12px;}
+[data-theme="dark"] .chart-wrap{background:var(--card);}
+.chart-title{font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;}
+.chart-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.chart-name{font-size:0.72rem;font-weight:700;color:var(--text);min-width:110px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.chart-bar-bg{flex:1;background:var(--border);border-radius:99px;height:10px;overflow:hidden;}
+.chart-bar-fill{height:100%;border-radius:99px;transition:width 0.8s ease;}
+.chart-pct{font-size:0.7rem;font-weight:800;min-width:36px;text-align:right;}
+
+/* BADGES */
+.badge-pass{display:inline-block;white-space:nowrap;background:#dcfce7;color:#16a34a;padding:2px 10px;border-radius:99px;font-size:0.7rem;font-weight:800;border:1px solid #86efac;}
+.badge-fail{display:inline-block;white-space:nowrap;background:#fef9ec;color:#d97706;padding:2px 10px;border-radius:99px;font-size:0.7rem;font-weight:800;border:1px solid #fcd34d;}
+
+/* EDIT */
+.q-edit-item{border:1px solid var(--border);padding:18px;border-radius:15px;margin-bottom:15px;background:var(--bg);}
+[data-theme="dark"] .q-edit-item{background:var(--card);}
+.scroll-area{max-height:420px;overflow-y:auto;border:1px solid var(--border);border-radius:15px;background:var(--white);}
+[data-theme="dark"] .scroll-area{background:var(--card);}
+.options-editor{display:flex;flex-direction:column;gap:6px;margin:8px 0 4px;}
+.option-edit-row{display:flex;align-items:center;gap:8px;}
+.option-edit-row input[type="text"]{flex:1;padding:10px 14px;margin-bottom:0;font-size:0.85rem;border-radius:10px;border:2px solid var(--border);background:var(--white);color:var(--text);}
+.option-edit-row .correct-btn{width:36px;height:36px;border-radius:10px;border:2px solid var(--border);background:var(--white);cursor:pointer;font-size:1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;margin:0;transition:0.2s;}
+.option-edit-row .correct-btn.active{background:#e8f5e9;border-color:var(--success);}
+.option-edit-row.is-correct input[type="text"]{border-color:var(--success);background:#f0fff4;}
+[data-theme="dark"] .option-edit-row.is-correct input[type="text"]{background:#1a3d2a;}
+.options-edit-label{font-size:0.75rem;font-weight:700;color:var(--elite);margin-bottom:2px;display:flex;justify-content:space-between;}
+.options-edit-label span{font-size:0.7rem;color:var(--muted);font-weight:600;}
+.admin-edit-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.editor-meta{font-size:0.75rem;color:var(--muted);font-weight:600;padding:8px 12px;background:var(--bg);border-radius:10px;margin-bottom:8px;text-align:center;}
+[data-theme="dark"] .editor-meta{background:var(--card);}
+
+/* OVERLAY */
+.attempt-detail-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:15px;backdrop-filter:blur(4px);}
+.attempt-detail-box{background:var(--white);border-radius:24px;padding:28px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 30px 60px rgba(0,0,0,0.25);}
+.close-detail-btn{background:var(--bg);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;margin:0;color:var(--text);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:12px 24px;border-radius:14px;font-size:0.85rem;font-weight:700;z-index:2000;opacity:0;transition:opacity 0.3s;pointer-events:none;}
+.toast.show{opacity:1;}
+
+/* PROGRESS COUNTER */
+.progress-counter{background:var(--bg);border-radius:12px;padding:8px 14px;display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:12px;}
+[data-theme="dark"] .progress-counter{background:var(--card);}
+.progress-counter span{color:var(--impulsa);font-weight:800;}
+[data-theme="dark"] .progress-counter span{color:#7dd3b8;}
+
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:10px;}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#4a537d;}
+
+@media print{
+    body{background:white;padding:0;}
+    .container{box-shadow:none;border-radius:0;border-top:none;max-width:100%;margin:0;padding:20px;}
+    .no-print{display:none!important;}
+    .review-item{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- DARK MODE TOGGLE -->
+<button class="dark-toggle no-print" onclick="toggleDark()" id="dark-btn">🌙 Oscuro</button>
+
+<!-- LOGIN -->
+<div id="login-screen" class="screen active">
+    <div style="text-align:center;margin-bottom:20px;margin-top:30px;">
+        <div style="font-size:3.5rem;margin-bottom:12px;">🏥</div>
+        <h1>Examen de Prestadores</h1>
+        <p class="subtitle">Jerárquicos Salud — Ingresá tu nombre y apellido</p>
+    </div>
+    <input type="text" id="user-name" placeholder="Nombre y Apellido" onkeydown="if(event.key==='Enter') goToWelcome()">
+    <button class="btn-primary" onclick="goToWelcome()">Continuar →</button>
+    <button class="btn-admin" onclick="showScreen('admin-login-screen')">Panel Administrativo</button>
+</div>
+
+<!-- BIENVENIDA / CONFIRMACIÓN -->
+<div id="welcome-screen" class="screen">
+    <div class="welcome-card">
+        <div class="wc-name" id="welcome-name">¡Hola, Florencia!</div>
+        <div class="wc-sub">Estás a punto de comenzar el examen. ¡Mucho éxito! 💪</div>
+    </div>
+    <div class="info-pills">
+        <div class="info-pill">
+            <div class="ip-val" id="info-q-count">26</div>
+            <div class="ip-lbl">Preguntas</div>
+        </div>
+        <div class="info-pill">
+            <div class="ip-val">80%</div>
+            <div class="ip-lbl">Para aprobar</div>
+        </div>
+        <div class="info-pill">
+            <div class="ip-val">Sin límite</div>
+            <div class="ip-lbl">De tiempo</div>
+        </div>
+        <div class="info-pill">
+            <div class="ip-val">1 vez</div>
+            <div class="ip-lbl">Por intento</div>
+        </div>
+    </div>
+    <div style="background:var(--bg);border-radius:16px;padding:16px 18px;margin-bottom:20px;border-left:5px solid var(--conecta);">
+        <p style="font-size:0.85rem;line-height:1.7;color:var(--muted);">📌 Leé cada pregunta con calma. Vas a ver la respuesta correcta y una explicación después de cada una. Podés tomarte el tiempo que necesites.</p>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">¡Comenzar el examen!</button>
+    <button class="btn-outline" onclick="showScreen('login-screen')" style="margin-top:4px;">← Volver</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" class="screen">
+    <div class="quiz-header">
+        <div id="progress">Pregunta 1 de 26</div>
+        <div class="progress-counter">Correctas <span id="live-correct">0</span> / Errores <span id="live-wrong">0</span></div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+    <div class="racha-bar">
+        <span class="racha-label">Racha</span>
+        <div class="racha-fires" id="racha-fires"></div>
+        <span class="racha-count" id="racha-count"></span>
+    </div>
+    <div id="question-container" style="flex:1">
+        <h3 id="question-text" style="margin-bottom:20px;color:var(--impulsa);line-height:1.4;font-size:1.05rem;"></h3>
+        <div id="options-container"></div>
+        <div id="answer-feedback" class="answer-feedback"></div>
+        <div id="explanation-box" class="explanation"></div>
+    </div>
+    <button id="next-btn" class="btn-primary" style="display:none;margin-top:20px;" onclick="nextQuestion()">Siguiente Pregunta →</button>
+</div>
+
+<!-- RESULTADOS -->
+<div id="result-screen" class="screen">
+    <h1 id="result-title" style="margin-bottom:12px;">¡Examen Finalizado!</h1>
+    <div id="medal-icon" style="text-align:center;font-size:4rem;margin:10px 0;">🏆</div>
+    <div id="verdict-banner" class="verdict-banner aprobado">
+        <div class="verd-title" id="verdict-title"></div>
+        <div class="verd-sub" id="verdict-sub"></div>
+    </div>
+    <div class="result-breakdown">
+        <div class="result-stat rs-score"><div class="rs-val" id="res-score">0</div><div class="rs-lbl">Puntos</div></div>
+        <div class="result-stat"><div class="rs-val" id="res-pct" style="color:var(--conecta);">0%</div><div class="rs-lbl">Porcentaje</div></div>
+        <div class="result-stat rs-correct"><div class="rs-val" id="res-correct">0</div><div class="rs-lbl">Correctas</div></div>
+        <div class="result-stat rs-wrong"><div class="rs-val" id="res-wrong">0</div><div class="rs-lbl">A reforzar</div></div>
+        <div class="result-stat rs-streak"><div class="rs-val" id="res-streak">0🔥</div><div class="rs-lbl">Mejor racha</div></div>
+    </div>
+    <div id="save-status2" style="text-align:center;font-size:0.82rem;font-weight:700;color:var(--muted);margin-bottom:14px;padding:10px;background:var(--bg);border-radius:12px;">☁️ Guardando resultado...</div>
+    <button id="btn-recuperatorio" style="display:none;background:#f59e0b;color:white;border:none;border-radius:18px;font-size:0.9rem;font-weight:800;padding:14px;cursor:pointer;margin-bottom:10px;width:100%;" onclick="startQuiz('recuperatorio')">📝 Rendir Recuperatorio</button>
+    <button class="btn-outline" onclick="showReview()" style="margin-bottom:10px;">📋 Ver todas mis respuestas</button>
+    <button style="background:var(--bg);border:none;border-radius:18px;color:var(--muted);font-size:0.85rem;font-weight:700;padding:14px;cursor:pointer;margin-bottom:0;" onclick="location.reload()">Cerrar y Salir</button>
+</div>
+
+<!-- REVISIÓN -->
+<div id="review-screen" class="screen">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+        <button onclick="showScreen('result-screen')" style="width:auto;padding:10px 16px;margin:0;background:var(--bg);border:none;border-radius:12px;font-size:0.85rem;font-weight:700;color:var(--elite);cursor:pointer;">← Volver</button>
+        <h1 style="font-size:1.2rem;flex:1;text-align:left;">Revisión de Respuestas</h1>
+    </div>
+    <div id="review-summary" style="background:var(--bg);padding:14px 18px;border-radius:14px;margin-bottom:16px;font-size:0.85rem;font-weight:600;color:var(--elite);"></div>
+    <div id="review-list"></div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="admin-login-screen" class="screen">
+    <h1>Acceso Admin</h1>
+    <input type="password" id="admin-pass" placeholder="Contraseña" onkeydown="if(event.key==='Enter') loginAdmin()">
+    <button class="btn-primary" onclick="loginAdmin()">Entrar</button>
+    <button class="btn-outline" onclick="showScreen('login-screen')">Volver</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel-screen" class="screen">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <h1 style="margin-bottom:0;font-size:1.3rem;">Panel de Control</h1>
+        <div id="completados-badge" style="background:var(--bg);border-radius:10px;padding:6px 12px;font-size:0.75rem;font-weight:700;color:var(--muted);border:1px solid var(--border);"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <button class="admin-tab-btn active" id="mode-btn-normal" style="flex:1;" onclick="switchAdminMode('normal')">📗 Examen Normal</button>
+        <button class="admin-tab-btn" id="mode-btn-recuperatorio" style="flex:1;" onclick="switchAdminMode('recuperatorio')">📙 Recuperatorio</button>
+    </div>
+
+    <!-- STATS RÁPIDAS -->
+    <div class="admin-stats" id="admin-stats-row">
+        <div class="admin-stat"><div class="as-val" id="stat-total" style="color:var(--conecta);">—</div><div class="as-lbl">Total</div></div>
+        <div class="admin-stat"><div class="as-val" id="stat-aprobados" style="color:#16a34a;">—</div><div class="as-lbl">Aprobados</div></div>
+        <div class="admin-stat"><div class="as-val" id="stat-reforzar" style="color:#d97706;">—</div><div class="as-lbl">A reforzar</div></div>
+        <div class="admin-stat"><div class="as-val" id="stat-promedio" style="color:var(--elite);">—</div><div class="as-lbl">Promedio</div></div>
+    </div>
+
+    <div class="admin-tabs">
+        <button class="admin-tab-btn active" id="tab-btn-resultados" onclick="switchAdminTab('resultados')">📊 Resultados</button>
+        <button class="admin-tab-btn" id="tab-btn-grafico" onclick="switchAdminTab('grafico')">📈 Gráfico</button>
+        <button class="admin-tab-btn" id="tab-btn-detalle" onclick="switchAdminTab('detalle')">🔍 Detalle</button>
+        <button class="admin-tab-btn" id="tab-btn-edit" onclick="switchAdminTab('edit')">✏️ Preguntas</button>
+    </div>
+
+    <!-- TAB RESULTADOS -->
+    <div id="admin-resultados" class="tab-content">
+        <div class="filter-bar">
+            <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">Todos</button>
+            <button class="filter-btn" id="filter-pass" onclick="setFilter('pass')">✅ Aprobados</button>
+            <button class="filter-btn" id="filter-fail" onclick="setFilter('fail')">💪 A reforzar</button>
+        </div>
+        <div class="scroll-area">
+            <table class="ranking-table">
+                <thead><tr><th>Nombre</th><th>Pts</th><th>%</th><th>Tiempo</th><th>Fecha</th><th>Estado</th></tr></thead>
+                <tbody id="ranking-body"></tbody>
+            </table>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
+            <button class="btn-sm btn-green" onclick="exportCSV()">📥 CSV</button>
+            <button class="btn-sm" style="background:var(--conecta);color:white;" onclick="exportPDF('all')">📄 PDF Todos</button>
+            <button class="btn-sm" style="background:#16a34a;color:white;" onclick="exportPDF('pass')">✅ PDF Aprobados</button>
+            <button class="btn-sm" style="background:#d97706;color:white;" onclick="exportPDF('fail')">💪 PDF A reforzar</button>
+            <button class="btn-sm btn-danger" onclick="clearAll()">🗑️ Limpiar</button>
+        </div>
+    </div>
+
+    <!-- TAB GRÁFICO -->
+    <div id="admin-grafico" class="tab-content" style="display:none;">
+        <div class="chart-wrap">
+            <div class="chart-title">Porcentaje por auxiliar</div>
+            <div id="chart-bars"></div>
+        </div>
+        <div class="chart-wrap">
+            <div class="chart-title">Distribución de resultados</div>
+            <div id="chart-dist" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+        </div>
+    </div>
+
+    <!-- TAB DETALLE -->
+    <div id="admin-detalle" class="tab-content" style="display:none;">
+        <p style="font-size:0.8rem;color:var(--muted);font-weight:600;text-align:center;margin-bottom:12px;">Tocá un nombre para ver el detalle completo</p>
+        <div id="detail-list" class="scroll-area" style="padding:10px;"></div>
+    </div>
+
+    <!-- TAB PREGUNTAS -->
+    <div id="admin-edit" class="tab-content" style="display:none;">
+        <div id="editor-meta" class="editor-meta"></div>
+        <div class="scroll-area" id="questions-editor-list" style="padding:10px;"></div>
+        <div class="admin-edit-actions">
+            <button class="btn-primary btn-sm" onclick="saveQuestionsLocal()">☁️ Guardar</button>
+            <button class="btn-success-sm btn-sm" onclick="addQuestion()">＋ Nueva</button>
+            <button class="btn-danger btn-sm" onclick="resetQuestions()">↺ Restaurar</button>
+        </div>
+    </div>
+
+    <button class="btn-admin" onclick="showScreen('login-screen')">Cerrar Sesión</button>
+</div>
+
+</div><!-- /container -->
+
+<!-- OVERLAY DETALLE -->
+<div id="attempt-detail-overlay" class="attempt-detail-overlay" style="display:none;">
+    <div class="attempt-detail-box">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:10px;">
+            <div>
+                <h2 id="detail-overlay-name" style="font-size:1.1rem;color:var(--impulsa);font-weight:800;"></h2>
+                <div id="detail-overlay-meta" style="font-size:0.78rem;color:var(--muted);font-weight:600;margin-top:4px;"></div>
+            </div>
+            <button class="close-detail-btn" onclick="closeDetailOverlay()">✕</button>
+        </div>
+        <div id="detail-overlay-content"></div>
+        <div style="margin-top:16px;" class="no-print">
+            <button class="btn-sm btn-green" onclick="window.print()">🖨️ Imprimir / PDF</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ADMIN_MAIL = 'mecortella@jerarquicos.com';
+const MAX_SCORE  = 300;
+const PASS_PCT   = 80;
+const PASS_SCORE = Math.round(MAX_SCORE * PASS_PCT / 100);
+const ADMIN_PASS = 'js2026';
+const LETTERS    = ['A','B','C','D'];
+const TOTAL_AUX  = 12; // Total auxiliares esperados // Total de auxiliares esperados
+
+// ── Supabase ───────────────────────────────────────────────
+const SB_URL = 'https://vadqwxrbonrbohvbeqdo.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhZHF3eHJib25yYm9odmJlcWRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MDc5ODUsImV4cCI6MjA5NzM4Mzk4NX0.Z9RATLBJ2UKY-TydxtTP1JWlvRgkSsIK9kEAOjrmyy0';
+const sbH = ()=>({'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'});
+async function sbGet(t,p=''){const r=await fetch(SB_URL+'/rest/v1/'+t+p,{headers:sbH()});return r.json();}
+async function sbPost(t,b){const r=await fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:{...sbH(),'Prefer':'return=minimal'},body:JSON.stringify(b)});return r.ok;}
+async function sbPatch(t,b,p=''){const r=await fetch(SB_URL+'/rest/v1/'+t+p,{method:'PATCH',headers:sbH(),body:JSON.stringify(b)});return r.ok;}
+
+// ── Preguntas ──────────────────────────────────────────────
+/*Q_START*/
+const initialQuestions = [
+    {q:"¿Cómo se denomina el acuerdo entre JS y una empresa o institución (Clínicas, Sanatorios, Federaciones)?",options:["Convenio Directo","Convenio","Facturación Directa"],correct:1,exp:"Manual Pág 4: El 'Convenio' nuclea distintos prestadores a través de una entidad reguladora."},
+    {q:"¿Cuál es el plazo máximo (reloj) para que un prestador envíe documentación faltante en una negociación?",options:["10 días","30 días","20 días"],correct:2,exp:"Manual Pág 6: Se deben tener en cuenta los 20 días de plazo en el estado 'Reclamo de documentación'."},
+    {q:"¿Qué debe hacer el prestador si necesita salvar un error en el cuerpo de una factura manual?",options:["Usar corrector","Escribir 'DIGO' y detallar texto correcto","Tachar y firmar al lado"],correct:1,exp:"Manual Pág 36: Se debe escribir textualmente DIGO (detallar texto correcto) con firma y sello."},
+    {q:"¿Cuál es el plazo máximo de presentación de facturación para que no sea considerada extemporánea?",options:["30 días","60 días","90 días"],correct:1,exp:"Manual Pág 19: El prestador tiene 60 días corridos de plazo para la presentación."},
+    {q:"Si una Mesa de Entrada (ME) figura en COLOR ROJO en Nativo, ¿qué nos indica?",options:["Urgente","La ME fue dada de baja","Ya fue pagada"],correct:1,exp:"Manual Pág 21: Las Mesa de Entradas dadas de baja se identifican de color rojo."},
+    {q:"¿A quién se debe consultar SIEMPRE antes de confirmar una refacturación de farmacia?",options:["Gapyc","Mesa de Entrada","Luz Vega (Liquidaciones Farmacia)"],correct:2,exp:"Manual Pág 24: Nunca se confirma una refacturación de farmacia sin autorización de Luz Vega."},
+    {q:"¿Cuál es el CUIT de la Mutual Jerárquicos (AMPJBON) para confeccionar facturas?",options:["33-71018560-9","30-68695518-0","30-65551888-0"],correct:1,exp:"Manual Pág 18: El CUIT correcto es 30-68695518-0."},
+    {q:"¿Cuál es el título que debe llevar obligatoriamente una prestación refacturada enviada por separado?",options:["RECLAMO","REFACTURACIÓN","DÉBITO"],correct:1,exp:"Manual Pág 23: Debe identificarse claramente con el título REFACTURACIÓN."},
+    {q:"En la modalidad GPO FULL, ¿cuánto tiempo demora el pago desde la fecha de ingreso original?",options:["15 días","30 días","45 días"],correct:0,exp:"Manual Pág 47: En GPO FULL se efectúa el pago en 15 días desde la fecha de ingreso original."},
+    {q:"En GPO PRESTACIONES (Círculos o Colegios), ¿el profesional puede visualizar el valor de cada código?",options:["Sí","Solo si está liquidado","No, el valor solo lo ve el convenio nucleador"],correct:2,exp:"Manual Pág 49: En esta modalidad, el profesional no puede visualizar el valor."},
+    {q:"¿Qué dato es OBLIGATORIO para que un reclamo CyR pueda ser finalizado conforme?",options:["Email","Teléfono de contacto","Nro de Legajo"],correct:1,exp:"Manual Pág 56: Es OBLIGATORIO tomar teléfono de contacto para brindar una respuesta."},
+    {q:"Para profesionales nucleados en una entidad, ¿quién debe remitir el listado de ABM para actualizar domicilios?",options:["El profesional directamente","El convenio que lo nuclea","El visitador médico"],correct:1,exp:"Manual Pág 11: Debe contactarse con el convenio que lo nuclea para que remita el listado de ABM."},
+    {q:"¿Qué dato debe incluir indefectiblemente toda facturación correspondiente para ser aceptada?",options:["Nro de legajo","Diagnóstico que motivó las prestaciones","Sello de Asociación"],correct:1,exp:"Manual Pág 24: Toda facturación deberá incluir indefectiblemente el diagnóstico."},
+    {q:"Si un profesional no ve el mail para firmar en Signatura Connect, ¿a qué sector debemos dar aviso?",options:["Convenios","Liquidaciones","firmaselectronicas@jerarquicos.com"],correct:2,exp:"Manual Pág 9: Se debe enviar un mail a esa casilla con los datos de contacto."},
+    {q:"Según la Res. 1743/2024, ¿cuánto demora aprox. el pago de INTEGRACIÓN (Discapacidad) desde el ingreso?",options:["30 días","45 días","60 días"],correct:2,exp:"Manual Pág 33: El pago de integración demora aproximadamente 60 días desde el ingreso."},
+    {q:"En caso de superar el plazo de 30 de procesamiento y que no esté liquidada la ME, ¿cómo procedemos?",options:["Generar reclamo G4 (demora)","Llamar a pagos","Mail a convenios"],correct:0,exp:"Manual Pág 55: Si una ME superó el tiempo de resolución, se genera reclamo G4."},
+    {q:"¿A qué organismo rinde Jerárquicos la prestación impaga en el Mecanismo de Integración?",options:["AFIP","Superintendencia de Servicios de Salud (SSS)","Ministerio de Salud"],correct:1,exp:"Manual Pág 31: Se rinde a la Superintendencia (SSS) para aprobación del subsidio."},
+    {q:"¿Qué socios NO se rinden bajo el Mecanismo de Integración (Discapacidad)?",options:["Socios con planes autónomos","Jubilados","Socios con CUD vigente"],correct:0,exp:"Manual Pág 31: No se rinden a integración los tratamientos de socios con planes autónomos."},
+    {q:"¿Con qué antelación se debe realizar la presentación para el inicio de tratamientos de discapacidad?",options:["15 días antes","60 días antes","30 días anteriores al inicio"],correct:2,exp:"Manual Pág 31: La presentación debe ser dentro de los 30 días anteriores al inicio."},
+    {q:"¿Qué debe figurar en la columna 'Resolución' de GI:8014 para saber que se derivó a la SSS?",options:["Nombre del auditor","La fecha de envío a la Super","CBU"],correct:1,exp:"Manual Pág 33: Sabremos que se derivó si figura la fecha de envío a la super."},
+    {q:"En caso de inconveniente con la plataforma GPO, ¿a qué sector debemos elevar el reclamo?",options:["Gapyc","Convenio","Herramientas Digitales"],correct:2,exp:"Manual Pág 55: Los inconvenientes técnicos con GPO o Portal Web se derivan a Herramientas Digitales."},
+    {q:"¿A qué tipo de planes debemos sumarle el 10,5% de IVA?",options:["Gravados","Re Gravados","No Gravados"],correct:0,exp:"Manual Pág 25: Se debe sumar el 10,5% de IVA en los Planes Voluntarios (Gravados)."},
+    {q:"Condición fiscal necesaria del prestador para sumar el 10,5% de IVA:",options:["Monotributo","Responsable Adherido","Responsable Inscripto"],correct:2,exp:"Manual Pág 25: Si es Responsable Inscripto, debe facturar con el 10,5% de IVA."},
+    {q:"¿Cuál es la vigencia (días para cobrar) de un cheque físico desde su emisión?",options:["15 días","30 días","60 días"],correct:1,exp:"Manual Pág 26: Tienen 30 días para cobrar; pasado ese tiempo debe devolverse."},
+    {q:"¿A qué sector se deriva un pedido de actualización de datos de un prestador SUR?",options:["Convenios","Auditoría Médica","GAPyC"],correct:2,exp:"Manual Pág 11: Los pedidos de actualización de Prestadores SUR se direccionan a GAPyC."},
+    {q:"Para un correcto asesoramiento en GPO, ¿qué debemos validar SIEMPRE antes de que el prestador cargue?",options:["CUIT","Que el socio se encuentre ACTIVO","Que la práctica sea cirugía"],correct:1,exp:"Manual Pág 46: Inicialmente se deberá validar si el socio se encuentra activo."}
+];
+/*Q_END*/
+
+/*Q_RECUP_START*/
+const initialQuestionsRecuperatorio = [
+    {q:"Un acuerdo entre JS y una entidad como una Clínica, Sanatorio o Federación, ¿cómo se llama?",options:["Facturación Directa","Convenio Directo","Convenio"],correct:2,exp:"Manual Pág 4: Ese tipo de acuerdo se llama 'Convenio' y nuclea distintos prestadores a través de una entidad reguladora."},
+    {q:"En el estado 'Reclamo de documentación' de una negociación, ¿de cuántos días dispone el prestador para enviar lo que falta?",options:["30 días","20 días","10 días"],correct:1,exp:"Manual Pág 6: El plazo es de 20 días en el estado 'Reclamo de documentación'."},
+    {q:"Si el prestador se equivoca en el cuerpo de una factura manual, ¿qué debe hacer para corregirlo correctamente?",options:["Tachar y firmar al lado","Usar corrector","Escribir 'DIGO' y detallar el texto correcto"],correct:2,exp:"Manual Pág 36: Se debe escribir textualmente DIGO (detallar texto correcto) con firma y sello."},
+    {q:"¿Hasta cuántos días corridos tiene el prestador para presentar la facturación sin que se considere extemporánea?",options:["90 días","60 días","30 días"],correct:1,exp:"Manual Pág 19: El prestador tiene 60 días corridos de plazo para la presentación."},
+    {q:"En el sistema Nativo, si una Mesa de Entrada (ME) aparece en color rojo, ¿qué significa?",options:["Ya fue pagada","La ME fue dada de baja","Es urgente"],correct:1,exp:"Manual Pág 21: Las Mesa de Entradas dadas de baja se identifican de color rojo."},
+    {q:"Antes de confirmar una refacturación de farmacia, ¿con quién hay que consultar sí o sí?",options:["Mesa de Entrada","Gapyc","Luz Vega (Liquidaciones Farmacia)"],correct:2,exp:"Manual Pág 24: Nunca se confirma una refacturación de farmacia sin autorización de Luz Vega."},
+    {q:"Para confeccionar facturas a la Mutual Jerárquicos (AMPJBON), ¿cuál es el CUIT correcto?",options:["30-65551888-0","30-68695518-0","33-71018560-9"],correct:1,exp:"Manual Pág 18: El CUIT correcto es 30-68695518-0."},
+    {q:"Cuando se envía una prestación refacturada por separado, ¿qué título obligatorio debe llevar?",options:["DÉBITO","REFACTURACIÓN","RECLAMO"],correct:1,exp:"Manual Pág 23: Debe identificarse claramente con el título REFACTURACIÓN."},
+    {q:"En la modalidad GPO FULL, ¿en cuántos días se efectúa el pago desde la fecha de ingreso original?",options:["45 días","30 días","15 días"],correct:2,exp:"Manual Pág 47: En GPO FULL se efectúa el pago en 15 días desde la fecha de ingreso original."},
+    {q:"En GPO PRESTACIONES (Círculos o Colegios), ¿puede el profesional ver el valor de cada código?",options:["Sí, siempre","Solo una vez liquidado","No, ese valor solo lo ve el convenio nucleador"],correct:2,exp:"Manual Pág 49: En esta modalidad, el profesional no puede visualizar el valor."},
+    {q:"Para poder cerrar conforme un reclamo de CyR, ¿qué dato es obligatorio tomar?",options:["Nro de Legajo","Teléfono de contacto","Email"],correct:1,exp:"Manual Pág 56: Es OBLIGATORIO tomar teléfono de contacto para brindar una respuesta."},
+    {q:"Para actualizar el domicilio de un profesional nucleado en una entidad, ¿quién debe enviar el listado de ABM?",options:["El visitador médico","El convenio que lo nuclea","El propio profesional"],correct:1,exp:"Manual Pág 11: Debe contactarse con el convenio que lo nuclea para que remita el listado de ABM."},
+    {q:"¿Qué dato tiene que incluir indefectiblemente toda facturación para ser aceptada?",options:["Sello de Asociación","Diagnóstico que motivó las prestaciones","Nro de legajo"],correct:1,exp:"Manual Pág 24: Toda facturación deberá incluir indefectiblemente el diagnóstico."},
+    {q:"Si un profesional no recibe el mail para firmar en Signatura Connect, ¿a qué casilla hay que avisar?",options:["Liquidaciones","Convenios","firmaselectronicas@jerarquicos.com"],correct:2,exp:"Manual Pág 9: Se debe enviar un mail a esa casilla con los datos de contacto."},
+    {q:"Según la Res. 1743/2024, ¿aproximadamente cuánto tarda el pago de Integración (Discapacidad) desde el ingreso?",options:["30 días","45 días","60 días"],correct:2,exp:"Manual Pág 33: El pago de integración demora aproximadamente 60 días desde el ingreso."},
+    {q:"Si una ME superó el plazo de procesamiento y todavía no está liquidada, ¿qué corresponde hacer?",options:["Mandar un mail a convenios","Llamar a pagos","Generar un reclamo G4 por demora"],correct:2,exp:"Manual Pág 55: Si una ME superó el tiempo de resolución, se genera reclamo G4."},
+    {q:"¿Ante qué organismo se rinde la prestación impaga dentro del Mecanismo de Integración?",options:["Ministerio de Salud","Superintendencia de Servicios de Salud (SSS)","AFIP"],correct:1,exp:"Manual Pág 31: Se rinde a la Superintendencia (SSS) para aprobación del subsidio."},
+    {q:"¿Qué socios quedan afuera del Mecanismo de Integración (Discapacidad)?",options:["Los jubilados","Los socios con CUD vigente","Los socios con planes autónomos"],correct:2,exp:"Manual Pág 31: No se rinden a integración los tratamientos de socios con planes autónomos."},
+    {q:"¿Con cuánta anticipación como máximo hay que presentar el inicio de un tratamiento por discapacidad?",options:["15 días antes","60 días antes","30 días antes"],correct:2,exp:"Manual Pág 31: La presentación debe ser dentro de los 30 días anteriores al inicio."},
+    {q:"En la columna 'Resolución' de GI:8014, ¿qué dato confirma que el caso se derivó a la Superintendencia?",options:["El CBU","La fecha de envío a la Super","El nombre del auditor"],correct:1,exp:"Manual Pág 33: Sabremos que se derivó si figura la fecha de envío a la super."},
+    {q:"Si hay un problema técnico con la plataforma GPO, ¿a qué sector hay que derivarlo?",options:["Convenios","Gapyc","Herramientas Digitales"],correct:2,exp:"Manual Pág 55: Los inconvenientes técnicos con GPO o Portal Web se derivan a Herramientas Digitales."},
+    {q:"¿A qué tipo de planes se les suma el 10,5% de IVA?",options:["No Gravados","Gravados","Re Gravados"],correct:1,exp:"Manual Pág 25: Se debe sumar el 10,5% de IVA en los Planes Voluntarios (Gravados)."},
+    {q:"¿Qué condición fiscal necesita el prestador para poder sumar el 10,5% de IVA en la factura?",options:["Responsable Adherido","Monotributo","Responsable Inscripto"],correct:2,exp:"Manual Pág 25: Si es Responsable Inscripto, debe facturar con el 10,5% de IVA."},
+    {q:"¿Cuántos días de vigencia tiene un cheque físico desde que se emite?",options:["60 días","30 días","15 días"],correct:1,exp:"Manual Pág 26: Tienen 30 días para cobrar; pasado ese tiempo debe devolverse."},
+    {q:"Un pedido de actualización de datos de un prestador SUR, ¿a qué sector se deriva?",options:["Auditoría Médica","GAPyC","Convenios"],correct:1,exp:"Manual Pág 11: Los pedidos de actualización de Prestadores SUR se direccionan a GAPyC."},
+    {q:"Antes de que un prestador cargue en GPO, ¿qué hay que validar siempre primero?",options:["Que la práctica sea cirugía","Que el socio esté ACTIVO","El CUIT"],correct:1,exp:"Manual Pág 46: Inicialmente se deberá validar si el socio se encuentra activo."}
+];
+/*Q_RECUP_END*/
+
+let currentUser='', currentQuestions=[], recuperatorioQuestions=[], shuffledQuestions=[];
+let currentIndex=0, score=0, correctCount=0, wrongCount=0;
+let racha=0, mejorRacha=0, startTime, timerInterval;
+let userAnswers=[], currentFilter='all';
+let examMode='normal'; // 'normal' | 'recuperatorio' — controla qué preguntas y qué tabla de resultados se usan
+let adminMode='normal'; // 'normal' | 'recuperatorio' — controla qué datos ve el panel admin
+function resultsTable(mode){return mode==='recuperatorio'?'resultados_recuperatorio':'resultados';}
+
+// ── Dark mode ──────────────────────────────────────────────
+function toggleDark(){
+    const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme',isDark?'light':'dark');
+    document.getElementById('dark-btn').textContent=isDark?'🌙 Oscuro':'☀️ Claro';
+    localStorage.setItem('js_exam_theme',isDark?'light':'dark');
+}
+function initTheme(){
+    const t=localStorage.getItem('js_exam_theme')||'light';
+    document.documentElement.setAttribute('data-theme',t);
+    document.getElementById('dark-btn').textContent=t==='dark'?'☀️ Claro':'🌙 Oscuro';
+}
+
+// ── Supabase helpers ───────────────────────────────────────
+async function getResults(mode='normal'){try{const d=await sbGet(resultsTable(mode),'?order=created_at.asc');return Array.isArray(d)?d:[];}catch(e){return[];}}
+async function saveResultSB(data,mode='normal'){return sbPost(resultsTable(mode),{name:data.name,score:data.score,pct:data.pct,passed:data.passed,time:data.time,date:data.date,correct:data.correct,wrong:data.wrong,streak:data.streak,answers:data.answers});}
+async function getQuestionsSB(mode='normal'){try{const d=await sbGet('preguntas','?id=eq.'+(mode==='recuperatorio'?2:1));return d&&d[0]?d[0].data:null;}catch(e){return null;}}
+async function saveQuestionsSB(q,mode='normal'){return sbPatch('preguntas',{data:q},'?id=eq.'+(mode==='recuperatorio'?2:1));}
+
+// ── Init ───────────────────────────────────────────────────
+async function init(){
+    initTheme();
+    try{
+        const sq=await getQuestionsSB('normal');
+        currentQuestions=(sq&&sq.length>0)?sq:JSON.parse(JSON.stringify(initialQuestions));
+    }catch(e){currentQuestions=JSON.parse(JSON.stringify(initialQuestions));}
+    try{
+        const sqr=await getQuestionsSB('recuperatorio');
+        recuperatorioQuestions=(sqr&&sqr.length>0)?sqr:JSON.parse(JSON.stringify(initialQuestionsRecuperatorio));
+    }catch(e){recuperatorioQuestions=JSON.parse(JSON.stringify(initialQuestionsRecuperatorio));}
+}
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function showToast(msg,dur=3000){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
+
+// ── Login → Welcome ────────────────────────────────────────
+const authorizedUsers=["Geronimo Sovrano","Cristian Romero","Sebastian Riquelme","Maykon Maciel","Bautista Courault","Florencia Muga","Valeria Barroso","Victoria Galvez","Julieta Viña","Tatiana Antonini","Ignacio Castillo","German Perri"];
+
+function goToWelcome(){
+    const nameInput=document.getElementById('user-name').value.trim();
+    const found=authorizedUsers.find(u=>u.toLowerCase()===nameInput.toLowerCase());
+    if(!found){alert("Nombre no encontrado. Verificá que esté bien escrito.");return;}
+    currentUser=found;
+    const firstName=found.split(' ')[0];
+    document.getElementById('welcome-name').textContent=`¡Hola, ${firstName}! 👋`;
+    document.getElementById('info-q-count').textContent=currentQuestions.length;
+    showScreen('welcome-screen');
+}
+
+// ── Start Quiz ─────────────────────────────────────────────
+function startQuiz(mode='normal'){
+    examMode=mode;
+    currentIndex=0;score=0;correctCount=0;wrongCount=0;racha=0;mejorRacha=0;userAnswers=[];
+    const bank=mode==='recuperatorio'?recuperatorioQuestions:currentQuestions;
+    shuffledQuestions=shuffle(bank).map(q=>{
+        const paired=q.options.map((opt,i)=>({text:opt,isCorrect:i===q.correct}));
+        const sp=shuffle(paired);
+        return{q:q.q,options:sp.map(p=>p.text),correct:sp.findIndex(p=>p.isCorrect),exp:q.exp};
+    });
+    startTime=Date.now();
+    showScreen('quiz-screen');
+    updateRachaDisplay();
+    loadQuestion();
+}
+
+function loadQuestion(){
+    const q=shuffledQuestions[currentIndex];
+    const total=shuffledQuestions.length;
+    document.getElementById('progress').innerText=`Pregunta ${currentIndex+1} de ${total}`;
+    document.getElementById('progress-bar').style.width=((currentIndex/total)*100)+'%';
+    document.getElementById('live-correct').textContent=correctCount;
+    document.getElementById('live-wrong').textContent=wrongCount;
+    document.getElementById('question-text').innerText=q.q;
+    document.getElementById('explanation-box').style.display='none';
+    document.getElementById('next-btn').style.display='none';
+    const fb=document.getElementById('answer-feedback');
+    fb.style.display='none';fb.className='answer-feedback';
+    const optDiv=document.getElementById('options-container');
+    optDiv.innerHTML='';
+    q.options.forEach((opt,i)=>{
+        const div=document.createElement('div');
+        div.className='option';
+        div.innerHTML=`<span class="option-letter">${LETTERS[i]}</span>${opt}`;
+        div.onclick=()=>selectOption(i,div);
+        optDiv.appendChild(div);
+    });
+}
+
+function selectOption(idx,el){
+    if(document.getElementById('next-btn').style.display==='flex')return;
+    const q=shuffledQuestions[currentIndex];
+    const all=document.querySelectorAll('.option');
+    all.forEach(o=>o.style.pointerEvents='none');
+    const isRight=idx===q.correct;
+    userAnswers.push({questionText:q.q,chosenText:q.options[idx],correctText:q.options[q.correct],isRight,exp:q.exp});
+    const fb=document.getElementById('answer-feedback');
+    if(isRight){
+        el.classList.add('correct');
+        score+=10;correctCount++;racha++;
+        if(racha>mejorRacha)mejorRacha=racha;
+        fb.textContent='¡Correcto! 🎉';
+        fb.className='answer-feedback correct-fb';
+    }else{
+        el.classList.add('wrong');
+        setTimeout(()=>all[q.correct].classList.add('correct'),400);
+        wrongCount++;racha=0;
+        fb.textContent='Casi... repasá este punto 📖';
+        fb.className='answer-feedback wrong-fb';
+    }
+    fb.style.display='block';
+    updateRachaDisplay();
+    document.getElementById('live-correct').textContent=correctCount;
+    document.getElementById('live-wrong').textContent=wrongCount;
+    const exp=document.getElementById('explanation-box');
+    exp.innerText=q.exp;exp.style.display='block';
+    document.getElementById('next-btn').style.display='flex';
+}
+
+function updateRachaDisplay(){
+    const fd=document.getElementById('racha-fires');
+    const ce=document.getElementById('racha-count');
+    fd.innerHTML='';
+    if(racha===0){ce.classList.remove('visible');return;}
+    const show=Math.min(racha,5);
+    for(let i=0;i<show;i++){const s=document.createElement('span');s.className='fire';s.textContent='🔥';fd.appendChild(s);}
+    if(racha>5){ce.textContent=`×${racha}`;ce.classList.add('visible');}
+    else ce.classList.remove('visible');
+}
+
+function nextQuestion(){currentIndex++;if(currentIndex<shuffledQuestions.length)loadQuestion();else finishQuiz();}
+
+async function finishQuiz(){
+    const diff=Date.now()-startTime;
+    const m=Math.floor(diff/60000).toString().padStart(2,'0');
+    const s=Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+    const time=`${m}:${s}`;
+    const date=new Date().toLocaleString('es-AR');
+    document.getElementById('progress-bar').style.width='100%';
+
+    const pctNum=Math.round((score/MAX_SCORE)*100);
+    const passed=pctNum>=PASS_PCT;
+    const rawPct=correctCount/shuffledQuestions.length;
+    const medal=rawPct>=0.9?'🏆':rawPct>=0.7?'🥈':rawPct>=0.5?'🥉':'🌱';
+    document.getElementById('medal-icon').innerText=medal;
+
+    const vb=document.getElementById('verdict-banner');
+    vb.className='verdict-banner '+(passed?'aprobado':'reforzar');
+    document.getElementById('verdict-title').innerText=passed?'¡Muy bien, aprobaste! ✅':'Seguí practicando 💪';
+    document.getElementById('verdict-sub').innerText=passed
+        ?`Obtuviste ${pctNum}% — ¡Superaste el mínimo requerido de ${PASS_PCT}%!`
+        :`Obtuviste ${pctNum}% — El mínimo es ${PASS_PCT}%. ¡Repasá los temas y volvé a intentarlo!`;
+
+    document.getElementById('res-score').innerText=score;
+    document.getElementById('res-pct').innerText=pctNum+'%';
+    document.getElementById('res-correct').innerText=correctCount;
+    document.getElementById('res-wrong').innerText=wrongCount;
+    document.getElementById('res-streak').innerText=mejorRacha+'🔥';
+
+    const recupBtn=document.getElementById('btn-recuperatorio');
+    if(recupBtn)recupBtn.style.display=(examMode==='normal'&&!passed)?'block':'none';
+    document.getElementById('result-title').innerText=examMode==='recuperatorio'?'¡Recuperatorio Finalizado!':'¡Examen Finalizado!';
+
+    showScreen('result-screen');
+
+    const saveEl=document.getElementById('save-status2');
+    const ok=await saveResultSB({name:currentUser,score,pct:pctNum,passed,time,date,correct:correctCount,wrong:wrongCount,streak:mejorRacha,answers:userAnswers},examMode);
+    saveEl.textContent=ok?'✅ Resultado guardado automáticamente':'⚠️ Error al guardar (sin conexión)';
+    saveEl.style.color=ok?'var(--success)':'var(--danger)';
+}
+
+// ── Revisión ───────────────────────────────────────────────
+function showReview(){
+    const list=document.getElementById('review-list');list.innerHTML='';
+    const pctNum=Math.round((score/MAX_SCORE)*100);
+    document.getElementById('review-summary').innerHTML=`<b>${currentUser}</b> &nbsp;|&nbsp; ${score} pts (${pctNum}%) &nbsp;|&nbsp; ✅ ${correctCount} correctas &nbsp; 📖 ${wrongCount} a reforzar`;
+    userAnswers.forEach((ans,i)=>{
+        const div=document.createElement('div');
+        div.className='review-item '+(ans.isRight?'rev-correct':'rev-wrong');
+        div.innerHTML=`
+            <div class="review-q-num">${ans.isRight?'✅':'📖'} Pregunta ${i+1}</div>
+            <div class="review-q-text">${ans.questionText}</div>
+            <div class="review-answer ${ans.isRight?'user-right':'user-wrong'}">${ans.isRight?'✓':'✗'} Tu respuesta: <b>${ans.chosenText}</b></div>
+            ${!ans.isRight?`<div class="review-answer correct-ans">✓ Correcta: <b>${ans.correctText}</b></div>`:''}
+            <div class="review-exp">${ans.exp}</div>`;
+        list.appendChild(div);
+    });
+    showScreen('review-screen');
+}
+
+// ── ADMIN ──────────────────────────────────────────────────
+function loginAdmin(){
+    if(document.getElementById('admin-pass').value===ADMIN_PASS){
+        showScreen('admin-panel-screen');
+        switchAdminTab('resultados');
+    }else alert('Contraseña incorrecta');
+}
+
+function switchAdminMode(mode){
+    adminMode=mode;
+    document.getElementById('mode-btn-normal').classList.toggle('active',mode==='normal');
+    document.getElementById('mode-btn-recuperatorio').classList.toggle('active',mode==='recuperatorio');
+    allResults=[];
+    const activeTab=['resultados','grafico','detalle','edit'].find(t=>document.getElementById('admin-'+t).style.display!=='none')||'resultados';
+    switchAdminTab(activeTab);
+}
+
+function switchAdminTab(tab){
+    ['resultados','grafico','detalle','edit'].forEach(t=>{
+        document.getElementById('admin-'+t).style.display=t===tab?'block':'none';
+        const btn=document.getElementById('tab-btn-'+t);
+        if(btn)btn.classList.toggle('active',t===tab);
+    });
+    if(tab==='resultados')loadRanking();
+    if(tab==='grafico')loadGrafico();
+    if(tab==='detalle')loadDetailList();
+    if(tab==='edit')loadAdminEditor();
+}
+
+let allResults=[];
+
+async function loadRanking(){
+    const tbody=document.getElementById('ranking-body');
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Cargando...</td></tr>';
+    allResults=await getResults(adminMode);
+    updateStatsBar(allResults);
+    renderRanking();
+}
+
+function updateStatsBar(results){
+    const aprobados=results.filter(r=>r.passed).length;
+    const promedio=results.length?Math.round(results.reduce((a,r)=>a+r.pct,0)/results.length):0;
+    document.getElementById('stat-total').textContent=results.length;
+    document.getElementById('stat-aprobados').textContent=aprobados;
+    document.getElementById('stat-reforzar').textContent=results.length-aprobados;
+    document.getElementById('stat-promedio').textContent=promedio+'%';
+    // Completados badge
+    const uniq=new Set(results.map(r=>r.name)).size;
+    document.getElementById('completados-badge').textContent=`Completaron ${uniq} / ${TOTAL_AUX} auxiliares`;
+}
+
+function setFilter(f){
+    currentFilter=f;
+    ['all','pass','fail'].forEach(x=>document.getElementById('filter-'+x).classList.toggle('active',x===f));
+    renderRanking();
+}
+
+function renderRanking(){
+    const tbody=document.getElementById('ranking-body');
+    tbody.innerHTML='';
+    let filtered=allResults.slice().reverse();
+    if(currentFilter==='pass')filtered=filtered.filter(r=>r.passed);
+    if(currentFilter==='fail')filtered=filtered.filter(r=>!r.passed);
+    if(!filtered.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Sin resultados para este filtro</td></tr>';return;}
+    filtered.forEach(r=>{
+        tbody.innerHTML+=`<tr>
+            <td><b>${r.name}</b></td>
+            <td>${r.score}</td>
+            <td>${r.pct}%</td>
+            <td>${r.time}</td>
+            <td>${String(r.date).split(',')[0]}</td>
+            <td><span class="${r.passed?'badge-pass':'badge-fail'}">${r.passed?'Aprobado':'A reforzar'}</span></td>
+        </tr>`;
+    });
+}
+
+async function loadGrafico(){
+    if(!allResults.length) allResults=await getResults(adminMode);
+    const bars=document.getElementById('chart-bars');
+    bars.innerHTML='';
+    const sorted=[...allResults].sort((a,b)=>b.pct-a.pct);
+    sorted.forEach(r=>{
+        const color=r.pct>=80?'#16a34a':r.pct>=60?'#d97706':'#dc2626';
+        const row=document.createElement('div');
+        row.className='chart-bar-row';
+        row.innerHTML=`
+            <div class="chart-name" title="${r.name}">${r.name.split(' ')[0]} ${r.name.split(' ').slice(-1)[0]}</div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width:0%;background:${color};" data-pct="${r.pct}"></div></div>
+            <div class="chart-pct" style="color:${color};">${r.pct}%</div>`;
+        bars.appendChild(row);
+    });
+    // Animate bars
+    setTimeout(()=>{
+        document.querySelectorAll('.chart-bar-fill').forEach(b=>{
+            b.style.width=b.dataset.pct+'%';
+        });
+    },100);
+
+    // Distribution
+    const dist=document.getElementById('chart-dist');
+    dist.innerHTML='';
+    const ap=allResults.filter(r=>r.passed).length;
+    const rf=allResults.length-ap;
+    const total=allResults.length||1;
+    const ranges=[
+        {label:'90-100%',count:allResults.filter(r=>r.pct>=90).length,color:'#16a34a'},
+        {label:'80-89%',count:allResults.filter(r=>r.pct>=80&&r.pct<90).length,color:'#65a30d'},
+        {label:'60-79%',count:allResults.filter(r=>r.pct>=60&&r.pct<80).length,color:'#d97706'},
+        {label:'<60%',count:allResults.filter(r=>r.pct<60).length,color:'#dc2626'},
+    ];
+    ranges.forEach(rng=>{
+        const pct=Math.round((rng.count/total)*100);
+        const d=document.createElement('div');
+        d.style.cssText='flex:1;min-width:70px;background:var(--bg);border-radius:14px;padding:12px 8px;text-align:center;border:2px solid var(--border);';
+        d.innerHTML=`<div style="font-size:1.4rem;font-weight:800;color:${rng.color};">${rng.count}</div><div style="font-size:0.65rem;font-weight:700;color:var(--muted);margin-top:4px;">${rng.label}</div>`;
+        dist.appendChild(d);
+    });
+}
+
+async function loadDetailList(){
+    if(!allResults.length) allResults=await getResults(adminMode);
+    const list=document.getElementById('detail-list');list.innerHTML='';
+    if(!allResults.length){list.innerHTML='<p style="text-align:center;color:var(--muted);padding:20px;font-size:0.85rem;">Sin resultados aún</p>';return;}
+    allResults.slice().reverse().forEach((r,i)=>{
+        const realIdx=allResults.length-1-i;
+        const div=document.createElement('div');
+        div.style.cssText='border:2px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:0.2s;background:var(--white);';
+        div.onmouseover=()=>div.style.borderColor='var(--conecta)';
+        div.onmouseout=()=>div.style.borderColor='var(--border)';
+        div.onclick=()=>openDetailOverlay(realIdx);
+        div.innerHTML=`
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+                <div>
+                    <div style="font-weight:800;font-size:0.95rem;">${r.name}</div>
+                    <div style="font-size:0.72rem;color:var(--muted);font-weight:600;margin-top:2px;">${r.date} · ⏱ ${r.time}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-weight:800;color:var(--conecta);">${r.score} pts (${r.pct}%)</span>
+                    <span class="${r.passed?'badge-pass':'badge-fail'}">${r.passed?'Aprobado':'A reforzar'}</span>
+                    <span style="font-size:0.7rem;color:var(--muted);">▶</span>
+                </div>
+            </div>`;
+        list.appendChild(div);
+    });
+}
+
+function openDetailOverlay(idx){
+    const r=allResults[idx];if(!r)return;
+    document.getElementById('detail-overlay-name').innerText=r.name;
+    document.getElementById('detail-overlay-meta').innerHTML=`${r.date} &nbsp;|&nbsp; ⏱ ${r.time} &nbsp;|&nbsp; ${r.score} pts (${r.pct}%) &nbsp;|&nbsp; <span class="${r.passed?'badge-pass':'badge-fail'}">${r.passed?'Aprobado':'A reforzar'}</span>`;
+    const content=document.getElementById('detail-overlay-content');content.innerHTML='';
+    const corrCount=(r.answers||[]).filter(a=>a.isRight).length;
+    const summary=document.createElement('div');
+    summary.style.cssText='display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;';
+    summary.innerHTML=`
+        <div style="flex:1;min-width:80px;background:#f5fff8;border:1px solid var(--success);border-radius:12px;padding:10px;text-align:center;"><div style="font-size:1.4rem;font-weight:800;color:var(--success);">${corrCount}</div><div style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;">Correctas</div></div>
+        <div style="flex:1;min-width:80px;background:#fffbeb;border:1px solid #f59e0b;border-radius:12px;padding:10px;text-align:center;"><div style="font-size:1.4rem;font-weight:800;color:#d97706;">${(r.answers||[]).length-corrCount}</div><div style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;">A reforzar</div></div>
+        <div style="flex:1;min-width:80px;background:#f8f0ff;border:1px solid var(--conecta);border-radius:12px;padding:10px;text-align:center;"><div style="font-size:1.4rem;font-weight:800;color:var(--conecta);">${r.pct}%</div><div style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;">Porcentaje</div></div>`;
+    content.appendChild(summary);
+    (r.answers||[]).forEach((ans,i)=>{
+        const div=document.createElement('div');
+        div.className='review-item '+(ans.isRight?'rev-correct':'rev-wrong');
+        div.style.marginBottom='10px';
+        div.innerHTML=`
+            <div class="review-q-num">${ans.isRight?'✅':'📖'} Pregunta ${i+1}</div>
+            <div class="review-q-text">${ans.questionText}</div>
+            <div class="review-answer ${ans.isRight?'user-right':'user-wrong'}">${ans.isRight?'✓':'✗'} Respondió: <b>${ans.chosenText}</b></div>
+            ${!ans.isRight?`<div class="review-answer correct-ans">✓ Correcta: <b>${ans.correctText}</b></div>`:''}
+            <div class="review-exp">${ans.exp}</div>`;
+        content.appendChild(div);
+    });
+    document.getElementById('attempt-detail-overlay').style.display='flex';
+}
+
+function closeDetailOverlay(){document.getElementById('attempt-detail-overlay').style.display='none';}
+document.getElementById('attempt-detail-overlay').addEventListener('click',function(e){if(e.target===this)closeDetailOverlay();});
+
+// ── EXPORTAR CSV ───────────────────────────────────────────
+async function exportCSV(){
+    const results=await getResults(adminMode);
+    if(!results.length){alert('No hay resultados');return;}
+    let csv='\uFEFFNombre;Puntaje;Porcentaje;Estado;Correctas;A reforzar;Racha;Tiempo;Fecha\n';
+    results.forEach(r=>{csv+=`${r.name};${r.score};${r.pct}%;${r.passed?'Aprobado':'A reforzar'};${r.correct};${r.wrong};${r.streak};${r.time};${r.date}\n`;});
+    const link=document.createElement('a');
+    link.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+    link.setAttribute('download',`Examen_Prestadores${adminMode==='recuperatorio'?'_Recuperatorio':''}_${new Date().toLocaleDateString('es-AR').replace(/\//g,'-')}.csv`);
+    document.body.appendChild(link);link.click();document.body.removeChild(link);
+}
+
+// ── EXPORTAR PDF ───────────────────────────────────────────
+async function exportPDF(filter='all'){
+    let results=await getResults(adminMode);
+    if(!results.length){alert('No hay resultados');return;}
+    if(filter==='pass')results=results.filter(r=>r.passed);
+    else if(filter==='fail')results=results.filter(r=>!r.passed);
+    if(!results.length){alert(filter==='pass'?'No hay auxiliares aprobados':'No hay auxiliares a reforzar');return;}
+    const w=window.open('','_blank');
+    const date=new Date().toLocaleDateString('es-AR');
+    const aprobados=results.filter(r=>r.passed).length;
+    const promedio=results.length?Math.round(results.reduce((a,r)=>a+r.pct,0)/results.length):0;
+    const maxScore=results.length?Math.max(...results.map(r=>r.pct)):0;
+    const tituloModo=adminMode==='recuperatorio'?'Recuperatorio':'';
+    const subtitulo=(filter==='pass'?'Reporte de aprobados':filter==='fail'?'Reporte de auxiliares a reforzar':'Reporte de resultados del equipo')+(adminMode==='recuperatorio'?' — Recuperatorio':'');
+
+    let rows='';
+    results.forEach((r,i)=>{
+        const passColor=r.passed?'#16a34a':'#d97706';
+        const passBg=r.passed?'#dcfce7':'#fef9ec';
+        const passBorder=r.passed?'#86efac':'#fcd34d';
+        const estado=r.passed?'Aprobado':'A reforzar';
+        const barColor=r.pct>=80?'#16a34a':r.pct>=60?'#d97706':'#dc2626';
+        rows+=`<tr>
+            <td><div style="font-weight:700;color:#1e293b;">${r.name}</div></td>
+            <td style="text-align:center;font-weight:800;color:#7c3aed;">${r.score}</td>
+            <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="flex:1;background:#f1f5f9;border-radius:99px;height:8px;overflow:hidden;">
+                        <div style="width:${r.pct}%;background:${barColor};height:100%;border-radius:99px;"></div>
+                    </div>
+                    <span style="font-weight:800;font-size:0.85rem;color:${barColor};min-width:36px;">${r.pct}%</span>
+                </div>
+            </td>
+            <td style="text-align:center;color:#16a34a;font-weight:700;">${r.correct}</td>
+            <td style="text-align:center;color:#d97706;font-weight:700;">${r.wrong}</td>
+            <td style="text-align:center;color:#64748b;">${r.time}</td>
+            <td style="text-align:center;color:#64748b;font-size:0.8rem;">${String(r.date).split(',')[0]}</td>
+            <td style="text-align:center;white-space:nowrap;"><span style="display:inline-block;white-space:nowrap;background:${passBg};color:${passColor};border:1px solid ${passBorder};padding:4px 12px;border-radius:99px;font-weight:700;font-size:0.75rem;">${estado}</span></td>
+        </tr>`;
+    });
+
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <title>Resultados Examen Prestadores ${filter==='pass'?'- Aprobados':filter==='fail'?'- A reforzar':''} — Jerárquicos Salud</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Inter','Segoe UI',sans-serif;background:#f8fafc;color:#1e293b;padding:32px;}
+        .page{max-width:920px;margin:0 auto;}
+        .topbar{background:linear-gradient(135deg,#00554e,#007a72);border-radius:20px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;}
+        .topbar h1{color:white;font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+        .topbar p{color:rgba(255,255,255,0.75);font-size:0.8rem;}
+        .topbar-right{text-align:right;color:rgba(255,255,255,0.9);font-weight:700;font-size:0.9rem;}
+        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+        .stat{background:white;border-radius:16px;padding:18px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.06);border:1px solid #e2e8f0;}
+        .stat .val{font-size:2rem;font-weight:800;line-height:1;}
+        .stat .lbl{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:#94a3b8;font-weight:600;margin-top:6px;}
+        .card{background:white;border-radius:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border:1px solid #e2e8f0;overflow:hidden;margin-bottom:24px;}
+        .card-header{padding:18px 22px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;}
+        .card-header h2{font-size:0.9rem;font-weight:700;color:#475569;}
+        table{width:100%;border-collapse:collapse;}
+        th{background:#f8fafc;color:#64748b;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.4px;font-weight:700;padding:12px 16px;text-align:left;border-bottom:2px solid #e2e8f0;}
+        td{padding:14px 16px;border-bottom:1px solid #f1f5f9;font-size:0.85rem;vertical-align:middle;}
+        tr:last-child td{border-bottom:none;}
+        tr:nth-child(even){background:#fafbfc;}
+        .footer{text-align:center;color:#94a3b8;font-size:0.72rem;margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0;}
+        @media print{body{background:white;padding:16px;}.page{max-width:100%;}.topbar{-webkit-print-color-adjust:exact;print-color-adjust:exact;}tr:nth-child(even){background:#fafbfc!important;}}
+    </style></head><body>
+    <div class="page">
+        <div class="topbar">
+            <div><h1>Examen de Prestadores</h1><p>Jerárquicos Salud &nbsp;·&nbsp; ${subtitulo}</p></div>
+            <div class="topbar-right">${date}<br><span style="font-size:0.75rem;opacity:0.8;">${results.length} auxiliares</span></div>
+        </div>
+        <div class="stats">
+            <div class="stat"><div class="val" style="color:#7c3aed;">${results.length}</div><div class="lbl">Total</div></div>
+            <div class="stat"><div class="val" style="color:#16a34a;">${aprobados}</div><div class="lbl">Aprobados</div></div>
+            <div class="stat"><div class="val" style="color:#d97706;">${results.length-aprobados}</div><div class="lbl">A reforzar</div></div>
+            <div class="stat"><div class="val" style="color:#0ea5e9;">${promedio}%</div><div class="lbl">Promedio</div></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h2>Detalle por auxiliar</h2><span style="font-size:0.75rem;color:#94a3b8;">${results.length} registros · Aprobación: ${Math.round(aprobados/results.length*100)}%</span></div>
+            <table><thead><tr><th>Nombre</th><th>Pts</th><th>Porcentaje</th><th style="text-align:center;">✓</th><th style="text-align:center;">📖</th><th style="text-align:center;">Tiempo</th><th style="text-align:center;">Fecha</th><th style="text-align:center;min-width:100px;">Estado</th></tr></thead><tbody>${rows}</tbody></table>
+        </div>
+        <div class="footer">Jerárquicos Salud · Examen de Prestadores · Generado el ${date}</div>
+    </div>
+    <script>window.onload=()=>{window.print();}<\/script>
+    </body></html>`);
+    w.document.close();
+}
+
+async function clearAll(){
+    const tabla=resultsTable(adminMode);
+    if(!confirm(`¿Borrar todos los resultados de ${adminMode==='recuperatorio'?'RECUPERATORIO':'EXAMEN NORMAL'}? Esta acción no se puede deshacer.`))return;
+    try{
+        const r=await fetch(SB_URL+'/rest/v1/'+tabla+'?id=gt.0',{method:'DELETE',headers:{...sbH(),'Prefer':'return=minimal'}});
+        if(!r.ok){
+            console.error('Delete '+tabla+' failed',r.status,await r.text().catch(()=>''));
+            alert('No se pudieron borrar los resultados (error '+r.status+'). Probablemente falta la política de DELETE en Supabase para la tabla "'+tabla+'". Revisá RLS en el panel de Supabase.');
+            return;
+        }
+    }catch(e){
+        console.error(e);
+        alert('Error de conexión al borrar los resultados. Probá de nuevo.');
+        return;
+    }
+    allResults=[];loadRanking();loadDetailList();showToast('Resultados eliminados');
+}
+
+// ── EDITOR DE PREGUNTAS ────────────────────────────────────
+function activeBank(){return adminMode==='recuperatorio'?recuperatorioQuestions:currentQuestions;}
+function loadAdminEditor(){
+    const list=document.getElementById('questions-editor-list');list.innerHTML='';
+    const bank=activeBank();
+    document.getElementById('editor-meta').textContent=`${adminMode==='recuperatorio'?'Recuperatorio':'Examen normal'} — Total: ${bank.length} preguntas`;
+    bank.forEach((q,i)=>renderEditItem(q,i));
+    bank.forEach((q,i)=>highlightCorrectRow(i,q.correct));
+}
+function renderEditItem(q,i){
+    const list=document.getElementById('questions-editor-list');
+    const div=document.createElement('div');div.className='q-edit-item';div.id=`qitem-${i}`;
+    const optsHTML=q.options.map((opt,oi)=>`
+        <div class="option-edit-row" id="opt-row-${i}-${oi}">
+            <button class="correct-btn ${q.correct===oi?'active':''}" onclick="updateCorrect(${i},${oi})">✓</button>
+            <input type="text" value="${opt.replace(/"/g,'&quot;').replace(/</g,'&lt;')}" oninput="updateOption(${i},${oi},this.value)">
+        </div>`).join('');
+    div.innerHTML=`
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <small style="color:var(--conecta);font-weight:800">Pregunta ${i+1}</small>
+            <button class="btn-danger btn-sm" style="width:auto;padding:5px 12px;font-size:0.7rem;margin:0" onclick="deleteQuestion(${i})">✕</button>
+        </div>
+        <textarea oninput="updateQ(${i},'q',this.value)">${q.q.replace(/</g,'&lt;')}</textarea>
+        <div class="options-edit-label">Opciones <span>✓ = Correcta</span></div>
+        <div class="options-editor" id="opts-${i}">${optsHTML}</div>
+        <small style="color:var(--elite);font-weight:700">Explicación</small>
+        <textarea oninput="updateQ(${i},'exp',this.value)">${(q.exp||'').replace(/</g,'&lt;')}</textarea>`;
+    list.appendChild(div);
+}
+function highlightCorrectRow(qIdx,co){
+    const q=activeBank()[qIdx];if(!q)return;
+    for(let oi=0;oi<q.options.length;oi++){
+        const row=document.getElementById(`opt-row-${qIdx}-${oi}`);
+        const btn=row?row.querySelector('.correct-btn'):null;
+        if(row)row.classList.toggle('is-correct',oi===co);
+        if(btn)btn.classList.toggle('active',oi===co);
+    }
+}
+function updateQ(i,f,v){activeBank()[i][f]=v;}
+function updateOption(i,oi,v){activeBank()[i].options[oi]=v;}
+function updateCorrect(i,oi){activeBank()[i].correct=oi;highlightCorrectRow(i,oi);}
+function addQuestion(){
+    const bank=activeBank();
+    bank.push({q:'Nueva pregunta',options:['Opción A','Opción B','Opción C'],correct:0,exp:'Explicación.'});
+    const ni=bank.length-1;
+    renderEditItem(bank[ni],ni);highlightCorrectRow(ni,0);
+    document.getElementById('editor-meta').textContent=`${adminMode==='recuperatorio'?'Recuperatorio':'Examen normal'} — Total: ${bank.length} preguntas`;
+    document.getElementById(`qitem-${ni}`).scrollIntoView({behavior:'smooth'});
+}
+function deleteQuestion(i){if(!confirm(`¿Eliminar la pregunta ${i+1}?`))return;activeBank().splice(i,1);loadAdminEditor();}
+async function saveQuestionsLocal(){
+    document.getElementById('editor-meta').textContent='Guardando en Supabase...';
+    const bank=activeBank();
+    const ok=await saveQuestionsSB(bank,adminMode);
+    if(ok){document.getElementById('editor-meta').textContent=`✅ ${bank.length} preguntas guardadas — todos los auxiliares verán los cambios al instante`;showToast('✅ Preguntas guardadas');}
+    else{document.getElementById('editor-meta').textContent='❌ Error al guardar';alert('Error al guardar en Supabase');}
+}
+async function resetQuestions(){
+    if(!confirm('¿Restaurar preguntas originales?'))return;
+    if(adminMode==='recuperatorio'){
+        recuperatorioQuestions=JSON.parse(JSON.stringify(initialQuestionsRecuperatorio));
+        await saveQuestionsSB(recuperatorioQuestions,'recuperatorio');
+    }else{
+        currentQuestions=JSON.parse(JSON.stringify(initialQuestions));
+        await saveQuestionsSB(currentQuestions,'normal');
+    }
+    loadAdminEditor();showToast('Preguntas restauradas');
+}
+
+init();
+</script>
+</body>
+</html>
